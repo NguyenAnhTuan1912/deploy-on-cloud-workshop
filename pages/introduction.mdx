@@ -1,0 +1,37 @@
+---
+title: Introduction
+---
+
+## About this workshop
+
+Thông thường thì mình thường triển khai các ứng dụng như là React, Node, Python ở trên máy vi tính cá nhân, và mình muốn cho bạn của mình truy cập ứng dụng thì họ buộc phải kết nối cùng mạng với máy của mình.
+
+Để cho người khác, ở đây là những _người dùng trên khắp internet_, có thể truy cập vào được trong ứng dụng của mình thì mình sẽ cần phải đưa các ứng dụng này chạy ở trong một máy chủ (Host) mà có khả năng cho phép người dùng khác có thể truy cập vào để lấy nội dung, gọi chung là **Server**.
+
+Và mỗi kiểu ứng dụng sẽ có những cách triển khai khác nhau, nhưng nhìn chung thì mình vẫn sẽ cần một Host để làm việc đó. Với sự phát triển của Cloud, thì việc triển khai lại dễ dàng hơn, tự do hơn rất nhiều, mang lại cho mình một cảm giác như là mình đang sở hữu một Host thật, không giống như khi mà mình thuê **VPS**.
+
+## Objective
+
+Vì thế nên trong bài này, mình sẽ hướng dẫn các bạn triển khai một ứng dụng lên trên máy ảo của AWS (EC2) với những kinh nghiệm mà mình có được trong quá trình thực hành với Cloud. Và sau khi đọc xong bài này thì mình mong các bạn _nắm được ý tưởng chính_ để triển khai một ứng dụng lên trên máy ảo của Cloud.
+
+## Architecture
+
+Để bài này dễ hiểu hơn thì mình có vẽ ra một sơ đồ kiến trúc như bên dưới
+
+![architecture](/assets/architecture.png)
+
+## Content
+
+Trong bài này thì chúng ta sẽ đi qua một số mục
+
+- Chuẩn bị
+  - Triển khai nhanh hạ tầng mạng, security group, ...
+  - Cài đặt source code cho ứng dụng chính
+- Triển khai cơ sở dữ liệu
+- Triển khai ứng dụng NodeJS
+- Triển khai ứng dụng React
+- Kiểm tra kết quả
+- Triển khai các ứng dụng khác như Python, C#, ...
+- Dọn dẹp tài nguyên (quan trọng)
+
+Bắt đầu thôi!!!

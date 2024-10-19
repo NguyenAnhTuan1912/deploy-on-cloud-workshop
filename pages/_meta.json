@@ -6,20 +6,16 @@
       "layout": "raw"
     }
   },
-  "user-guide": {
-    "type": "page",
-    "title": "User Guide"
-  },
   "docs": {
     "type": "page",
-    "href": "/docs/latest",
-    "title": "Documentation"
+    "href": "/introduction",
+    "title": "Content"
   },
-  "change-log": {
-    "type": "page",
-    "title": "Change Log",
-    "theme": {
-      "layout": "raw"
-    }
-  }
+  "introduction": "Introduction",
+  "preparation": "Preparation",
+  "configure-mysql": "Configure Database Server with MySQL",
+  "deploy-nodejs-application": "Deploy NodeJS Application",
+  "deploy-react-application": "Deploy React Application",
+  "deploy-other-applications": "Deploy Other Applications",
+  "cleanup": "Clean up Resources"
 }

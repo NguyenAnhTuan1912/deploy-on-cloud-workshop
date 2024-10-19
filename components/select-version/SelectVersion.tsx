@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const SelectVersion = () => {
-  const [selectedVersion, setSelectedVersion] = useState('');
+  const [selectedVersion, setSelectedVersion] = useState("");
 
-  const versionsArr = ['v1.0.1', 'v1.0.2', 'v1.0.3', 'v1.0.4']; // Danh sách các phiên bản có sẵn
+  const versionsArr = ["v1.0.1", "v1.0.2", "v1.0.3", "v1.0.4"]; // Danh sách các phiên bản có sẵn
 
   useEffect(() => {
-    const pathArray = window.location.pathname.split('/');
+    const pathArray = window.location.pathname.split("/");
     const currentVersion = pathArray[pathArray.length - 1];
 
-    if (currentVersion === 'latest') {
+    if (currentVersion === "latest") {
       const latestVersion = versionsArr.sort((a, b) => (a > b ? -1 : 1))[0];
       setSelectedVersion(latestVersion);
     } else if (versionsArr.includes(currentVersion)) {
@@ -21,7 +21,7 @@ const SelectVersion = () => {
     let version = e.target.value;
     const latestVersion = versionsArr.sort((a, b) => (a > b ? -1 : 1))[0];
     if (version === latestVersion) {
-      version = 'latest';
+      version = "latest";
     }
     setSelectedVersion(version);
     if (version) {
