@@ -1,0 +1,101 @@
+---
+title: Setup network
+---
+
+## Setup Network Infrastructure
+
+Trong phần này thì mình sẽ không quá tập trung vào phần setup hạ tầng mạng, cho nên là mình sẽ vào trong VPC Console để tạo tự động một hạ tầng mạng bao gồm các thành phần mà mình đã liệt kê ở phần trước đó.
+
+Đầu tiên, vào trong AWS Management Console
+
+- Nhập **VPC** trên thanh tìm kiếm.
+- Chọn **VPC**.
+
+![2.1.1](/assets/preparation/2.1.1.png)
+
+Trong trang chủ của VPC, ấn **Create VPC**
+
+![2.1.2](/assets/preparation/2.1.2.png)
+
+Trong trang cài đặt VPC
+
+- Chọn **VPC and more**
+- Name tag auto-generation: `deploy` (đặt là gì cũng được)
+- CIDR Block: `10.0.0.0/16`
+- Tenancy: **Default**
+
+![2.1.3](/assets/preparation/2.1.3.png)
+
+Tiếp theo, cấu hình thêm một số thông tin như
+
+- Number of AZs: chọn **1** (trong bài này mình dùng 1 thôi)
+- Number of public subnets: chọn **1**
+- Number of private subnets: chọn **1**
+- NAT gateway: chọn **In 1 AZ**
+- VPC Endpoints: chọn **None** (trong bài này thì mình chưa cần tới)
+- DNS options: tích chọn lần lượt **Enable DNS hostname** và **Enable DNS resolution**.
+
+![2.1.4](/assets/preparation/2.1.4.png)
+
+Ấn **Create VPC**
+
+![2.1.5](/assets/preparation/2.1.5.png)
+
+Chờ cho AWS tạo xong, chúng ta ấn **View VPC**
+
+![2.1.6](/assets/preparation/2.1.6.png)
+
+Nếu như bạn làm được tới đây thì chúc mừng bạn đã làm xong bước 1
+
+![2.1.7](/assets/preparation/2.1.7.png)
+
+Giờ thì tiến hành setup security group.
+
+## Setup Security Group
+
+Giờ thì chúng ta sẽ tạo Security Group để cho phép những traffic cần thiết vào trong EC2 của chúng ta.
+
+- Cuộn phần menu bên trái xuống phần **Security**
+- Chọn **Security groups**
+
+![2.1.8](/assets/preparation/2.1.8.png)
+
+Chúng ta sẽ tạo một SG mà chỉ cho phép SSH từ máy của mình và cho phép HTTP từ Internet.
+
+- Name: `deploy-sg-public` (nên ghi theo quy tắc cho dễ nhớ và dễ phân biệt)
+- Description: `Allow SSH from Authorized Person and HTTP in Port 80 from Internet` (ghi gì cũng được)
+- VPC: chọn `deploy-vpc`
+- Thêm 2 Inbound Rules như trong hình:
+  - Type: **SSH**; Protocol: **TCP**; Port range: **22**; Source: **My IP**.
+  - Type: **HTTP**; Protocol: **TCP**; Port range: **80**; Source: **Anywhere - IPv4**.
+
+![2.1.9](/assets/preparation/2.1.9.png)
+
+Ấn **Create security group** để tạo
+
+![2.1.10](/assets/preparation/2.1.10.png)
+
+Tương tự, giờ thì chúng ta sẽ cấu hình thêm một SG mà chỉ cho phép một số traffic giới hạn từ SG trên
+
+- Name: `deploy-sg-private` (nên ghi theo quy tắc cho dễ nhớ và dễ phân biệt)
+- Description: `Allow access from public SG` (ghi gì cũng được)
+- VPC: chọn `deploy-vpc`
+- Thêm 2 Inbound Rules như trong hình:
+  - Type: **SSH**; Protocol: **TCP**; Port range: **22**; Source: **deploy-sg-public**.
+  - Type: **MySQL/Aurora**; Protocol: **TCP**; Port range: **3306**; Source: **deploy-sg-public**.
+
+![2.1.11](/assets/preparation/2.1.11.png)
+
+Trông các Inbound Rules sẽ như thế này
+
+![2.1.12](/assets/preparation/2.1.12.png)
+
+Cấu hình xong thì ấn **Create security group** để tạo
+
+![2.1.13](/assets/preparation/2.1.13.png)
+
+Cuối cùng thì chúng ta sẽ có thêm 2 SGs như thế này
+
+![2.1.14](/assets/preparation/2.1.14.png)
+
+Ok, như vậy thì chúng ta đã cấu hình xong một hạ tầng đơn giản cho hệ thống ứng dụng. Ở phần sau thì chúng ta sẽ đi vào các bước cầu hình Hosts cho Database và Application (React, NodeJS) với **EC2**.

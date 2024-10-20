@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useConfig, DocsThemeConfig } from "nextra-theme-docs";
 import Link from "next/link";
-import SelectVersion from "./components/select-version/SelectVersion";
+
+// Import components
+import Notice from "./components/Notice";
 
 const config: DocsThemeConfig = {
+  components: {
+    Notice,
+  },
   head: function useHead() {
     const config = useConfig<{ description?: string; image?: string }>();
     const description = config.frontMatter.description || "Website description";

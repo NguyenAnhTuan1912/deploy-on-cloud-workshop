@@ -2,4 +2,24 @@
 title: Preparation
 ---
 
-## Chuẩn bị
+## About application
+
+Chúng ta sẽ triển khai ứng dụng ToDo App, có Backend và Database để lưu lại thông tin của người dùng. Được xây dựng với **React**, **NodeJS** và **MySQL**. Để cho dễ hình dung thì mình có mô hình ở bên dưới
+
+**INSERT IMAGE HERE**
+
+## Preparation
+
+Để có thể triển khai được trên Cloud thì chúng ta cần triển khai một vùng mạng riêng (gọi là VPC), trong vùng mạng này gồm có các thành phần như là:
+
+- **Subnets**: dùng để "chứa" các thiết bị mạng, node mạng.
+- **Route table**: được sử dụng với Router để định tuyến gói tin tới đúng Subnets, đúng đích.
+- **Internet Gateway**: là thiết bị dùng để các node mạng bên trong có thể đi ra ngoài internet, và nhận các yêu cầu từ nguồn qua internet đi vào.
+- **NAT Gateway**: là một thiết bị dùng để "ẩn" các node mạng bên trong, để có thể đi ra ngoài được internet mà không cần phải có Public IPv4.
+- **Security Groups**: giống như tường lửa, giúp mình chặn hoặc cho phép một traffic từ một nguồn hoặc target nào đó. Trong bài này thì chúng ta sẽ cấu hình 2 Security Groups.
+
+<Notice>
+  Để có thể làm được bài này thì các bạn phải thực hiện được bước chuẩn bị này
+  thành công. Vì để các thiết bị có thể giao tiếp được với nhau thì nó cần một
+  hạ tầng mạng ổn định
+</Notice>
