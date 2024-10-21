@@ -2,4 +2,58 @@
 title: Configure MySQL
 ---
 
-## Confgure Database Server with MySQL
+## Install MySQL Client
+
+Để có thể kết nối được với Database Server đang chạy ở trong Database Host thì Application Host cần có MySQL Client. Tiến hành tải MySQL Client.
+
+```bash
+sudo apt update
+sudo apt install mysql-client
+```
+
+<Image src="/assets/configure-mysql/3.1.png" />
+
+<Image src="/assets/configure-mysql/3.2.png" />
+
+## Configure Database
+
+Ở trong phần này thì mình sẽ phải tạo Database, Table để ứng dụng có thể chạy được. Vào trong thư mục `todoapp/database/scripts` để xem script cài đặt database, tables
+
+```bash
+cd todoapp/database/scripts
+cat init.sql
+```
+
+Nội dung của file `init.sql` như sau
+
+<Image src="/assets/configure-mysql/3.3.png" />
+
+Lưu lại đường dẫn của script này
+
+```bash
+echo $PWD/init.sql
+```
+
+<Image src="/assets/configure-mysql/3.4.png" />
+
+Dùng lệnh bên dưới để kết nối MySQL Server
+
+```bash
+mysql -h "database-host-private-ipv4" -u admin -p
+```
+
+<Image src="/assets/configure-mysql/3.5.png" />
+
+Ok, đã kết nối thành công.
+
+Giờ thì chúng ta sẽ dùng script để khởi tạo database, tables. Dùng lại đường dẫn tới `init.sql` mà mình đã tạo trước đó.
+
+```mysql
+source "path-to-init.sql"
+```
+
+<Image src="/assets/configure-mysql/3.6.png" />
+
+<Image src="/assets/configure-mysql/3.7.png" />
+
+Ok, như vậy thì chúng ta đã setup xong Database cho ứng dụng, ở phần sau thì chúng ta sẽ tiến hành triển khai ứng dụng NodeJS.

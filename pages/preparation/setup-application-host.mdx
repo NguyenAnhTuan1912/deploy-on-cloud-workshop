@@ -1,3 +1,103 @@
 ---
 title: Setup Application Host
 ---
+
+## Clone a Github Repository (Source Code)
+
+Trước khi clone source code về thì mình thử kiểm tra xem là Git có tồn tại trong Application Host hay không
+
+```bash
+git -v
+```
+
+<Image src="/assets/preparation/2.5.1.png" />
+
+Nếu không có thì dùng lệnh `sudo apt install git-all` để cài Git.
+
+```bash
+git clone https://github.com/Code4life-Labs/todoapp
+```
+
+<Image src="/assets/preparation/2.5.2.png" />
+
+Kiểm tra trong thư mục dự án
+
+```bash
+cd todoapp
+ls
+```
+
+<Image src="/assets/preparation/2.5.3.png" />
+
+Chú thích:
+
+- **client**: là thư mục chứa mã nguồn của React Application.
+- **database**: là thư mục chứa SQL Script.
+- **server**: là thư mục chứa mã nguồn của NodeJS Application.
+
+## Install NodeJS
+
+Giờ thì tiến hành cài đặt NodeJS (và NPM). Đầu tiên là tải script cài đặt về trước và cài đặt.
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+```
+
+<Image src="/assets/preparation/2.5.4.png" />
+
+Setup biến môi trường cho NVM, Node và NPM để có thể dùng được NodeJS sau này.
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+```
+
+<Notice>
+  Đoạn cài env này sẽ được in ra ở cuối phần cài NVM, bạn nhớ lưu ý khi cài.
+</Notice>
+
+<Image src="/assets/preparation/2.5.5.png" />
+
+Khi NVM đã được cài đặt thì tiến hành cài NodeJS
+
+```bash
+nvm install 20
+```
+
+<Image src="/assets/preparation/2.5.6.png" />
+
+Ok, như vậy thì NodeJS đã được cài xong.
+
+## Install Nginx
+
+Giờ thì chúng ta sẽ cài nginx với câu lệnh sau
+
+```bash
+sudo apt update
+sudo apt install nginx
+```
+
+<Image src="/assets/preparation/2.5.7.png" />
+
+<Image src="/assets/preparation/2.5.8.png" />
+
+Sau khi tải xong thì kiểm tra xem Nginx Service đã chạy hay chưa
+
+```bash
+systemctl status nginx
+```
+
+Ok, service đang hoạt động tốt
+
+<Image src="/assets/preparation/2.5.10.png" />
+
+Giờ thì chúng ta sẽ dùng **Public IPv4 DNS** của Application Host để kiểm tra
+
+<Image src="/assets/preparation/2.5.11.png" />
+
+Ok, như vậy chúng ta đã setup xong những gì cần thiết. Ở trong phần sau chúng ta sẽ tiến hành cấu hình Database từ trong Application Host mà không càn phải kết nối SSH qua Database Host.
+
+<Notice>
+  Đọc thêm về Nginx [https://nginx.org/en/](https://nginx.org/en/)
+</Notice>

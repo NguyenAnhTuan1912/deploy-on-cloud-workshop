@@ -1,0 +1,107 @@
+---
+title: Serve NodeJS as Service
+---
+
+## Prepare for deployment
+
+Trước khi triển khai, thì chúng ta cần phải lưu ý một số biến môi trường như suitable
+
+```
+HOST="0.0.0.0"
+PORT=8000
+MYSQL_HOST="database-host-private-ipv4"
+MYSQL_USER="admin"
+MYSQL_USER_PASSWORD="letmein12345"
+```
+
+Và binary của Node là nằm ở trong `/home/ubuntu/.nvm` chứ không nằm trong `/usr/bin` hay `/usr/local/bin`.
+
+<Image src="/assets/deploy-nodejs/4.1.1.png" />
+
+Chúng ta sẽ dùng đường dẫn này để tạo service.
+
+Vào trong `todoapp/server`, tiến hành cài đặt các dependencies
+
+```bash
+npm install
+```
+
+<Image src="/assets/deploy-nodejs/4.1.2.png" />
+
+## Move source code to OPT Directory
+
+Đầu tiên thì chúng ta sẽ tạo một directory mới ở trong `/opt`
+
+```bash
+sudo mkdir -p /opt/todoapp
+```
+
+<Image src="/assets/deploy-nodejs/4.1.3.png" />
+
+Sau đó copy cả thư mục với đường dẫn mới
+
+```bash
+sudo cp -R $HOME/todoapp/server /opt/todoapp
+```
+
+<Image src="/assets/deploy-nodejs/4.1.4.png" />
+
+## Create service
+
+Giờ thì bắt đầu tạo Service cho NodeJS App.
+
+```bash
+sudo vi /etc/systemd/system/todoapp.service
+```
+
+Thêm các dòng này vào trong `todoapp.service`
+
+```bash
+[Unit]
+Description=TodoApp Node.js Server
+After=network.target
+
+[Service]
+# Replace bin của node ở đây nếu `which node` ra kết quả khác
+ExecStart=/home/ubuntu/.nvm/versions/node/v20.18.0/bin/node /opt/todoapp/server/index.js
+WorkingDirectory=/opt/todoapp/server
+Restart=always
+User=ubuntu
+Group=ubuntu
+Environment=HOST="0.0.0.0"
+Environment=PORT=8000
+# Thay địa chỉ IPv4 mật của Database Host
+Environment=MYSQL_HOST="database-host-private-ipv4"
+Environment=MYSQL_USER="admin"
+Environment=MYSQL_USER_PASSWORD="letmein12345"
+
+[Install]
+WantedBy=multi-user.target
+```
+
+<Image src="/assets/deploy-nodejs/4.1.5.png" />
+
+Lưu lại và nạp cấu hình mới
+
+```bash
+sudo systemctl daemon-reload
+```
+
+<Image src="/assets/deploy-nodejs/4.1.6.png" />
+
+Lần lượt chạy và kiểm tra trạng thái của service
+
+```bash
+sudo systemctl start todoapp.service
+sudo systemctl status todoapp.service
+```
+
+<Image src="/assets/deploy-nodejs/4.1.7.png" />
+
+Giờ thì bật service, để mỗi khi máy reboot thì ứng dụng sẽ chạy lại theo máy
+
+```bash
+sudo systemctl enable todoapp.service
+```
+
+<Image src="/assets/deploy-nodejs/4.1.8.png" />

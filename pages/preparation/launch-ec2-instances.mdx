@@ -2,6 +2,101 @@
 title: Launch EC2 Instances
 ---
 
+## Launch EC2 Instance for Application
+
+Đầu tiên, trên thanh tìm kiếm
+
+- Nhập **EC2**
+- Chọn **EC2**
+
+<Image src="/assets/preparation/2.2.1.png" />
+
+Ở phần menu bên trái,
+
+- Chọn **Instance**
+- Ấn **Launch instance**
+
+<Image src="/assets/preparation/2.2.2.png" />
+
+Để quản lý các instance dễ hơn, thì chúng ta phải đặt tên instance dễ nhận biết và phân loại, đặt là `deploy-app-host`.
+
+<Image src="/assets/preparation/2.2.3.png" />
+
+Ở trong phần Application & OS Images
+
+- Chọn **Ubuntu**
+- Amazon Machine Image: **Ubuntu Server 24.04 LTS**
+- Architecture: **64-bit (x86)**
+
+<Image src="/assets/preparation/2.2.4.png" />
+
+Tiếp theo, chúng ta sẽ chọn instance type cho mạnh một xíu, chọn **t2.medium**. Tiếp theo là tạo Key-pair, ấn **Create new key pair**
+
+<Image src="/assets/preparation/2.2.5.png" />
+
+<Notice>
+  Để có kết nối được SSH vào trong EC2 Instance, thì mình phải tạo một cặp
+  key-pair để xác thực khi kết nối.
+</Notice>
+
+Nhập tên cho key pair là `general-use`, với những EC2 mà mang tính chất làm lab, thử nghiệm, test thì nên tạo một key-pair dùng chung.
+
+<Image src="/assets/preparation/2.2.6.png" />
+
+Sau khi tạo xong thì mình sẽ được yêu cầu tải về, tải KP về máy và lưu lại trong một folder nào đó để dễ quản lý.
+
+<Image src="/assets/preparation/2.2.7.png" />
+
+<Image src="/assets/preparation/2.2.8.png" />
+
+Kết quả sẽ trông như thế này
+
+<Image src="/assets/preparation/2.2.9.png" />
+
+Tiếp theo, trong phần Network Settings
+
+- VPC: chọn `deploy-vpc`
+- Subnet: chọn public subnet.
+- Auto-assign public IP: khi đó thì lựa chọn này sẽ tự động **Enable**.
+- Firewall (Security groups): chọn **Select existing security group**.
+  - Chọn `deploy-sg-public`.
+- Ấn **Launch instance**
+
+<Image src="/assets/preparation/2.2.10.png" />
+
+Như vậy thì chúng ta đã tạo xong Host cho Application, tiếp theo là tạo Host cho DB.
+
 ## Launch EC2 Instance for Database
 
-## Launch EC2 Instance for Application
+Tiếp tục, chúng ta sẽ lặp lại hầu hết các bước vừa rồi, đặt tên cho instance là `deploy-db-host`
+
+<Image src="/assets/preparation/2.2.11.png" />
+
+Ở trong phần Application & OS Images
+
+- Chọn **Ubuntu**
+- Amazon Machine Image: **Ubuntu Server 24.04 LTS**
+- Architecture: **64-bit (x86)**
+
+<Image src="/assets/preparation/2.2.12.png" />
+
+Tiếp theo, chọn **t2.medium** và key pair và chúng ta mới tạo hồi nãy.
+
+<Image src="/assets/preparation/2.2.14.png" />
+
+Trong phần Network Settings
+
+- VPC: chọn `deploy-vpc`
+- Subnet: chọn private subnet.
+- Auto-assign public IP: mặc định là **Disable**.
+- Firewall (Security groups): chọn **Select existing security group**.
+  - Chọn `deploy-sg-private`.
+- Ấn **Launch instance**
+
+<Image src="/assets/preparation/2.2.15.png" />
+
+Và đây là kết quả của 2 Instances
+
+<Image src="/assets/preparation/2.2.16.png" />
+
+Như vậy thì chúng ta đã tạo thành công 2 instances cùng chạy trong một VPC, ở bước tiếp theo thì chúng ta sẽ kết nối SSH tới Host của Application bằng VSCode và tải lần lượt các package, source code. Tương tự với Host của DB, chúng ta sẽ cài đặt MySQL Server lên trên đó.

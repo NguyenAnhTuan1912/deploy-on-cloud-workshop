@@ -1,3 +1,179 @@
 ---
 title: Setup Database Host
 ---
+
+## Connect SSH to Database Host using Application Host
+
+Vì là Database Host không thể được truy cập từ bên ngoài internet, cho nên là chúng ta sẽ cần phải kết nối SSH vào trong Host này thông qua Application Host mà chúng ta đã kết nối SSH thành công trước đó.
+
+Đầu tiên, chúng ta sẽ phải upload file key pair ở trong máy lên trên Application Host.
+
+- Mở thư mục chứa key
+- Kéo file vào trong Explorer
+- Xem kết quả
+
+<Image src="/assets/preparation/2.4.1.png" />
+
+Kiểm tra permissions của key pair
+
+```bash
+ls -l general-use.pem
+```
+
+<Image src="/assets/preparation/2.4.2.png" />
+
+Giờ chúng ta cần phải set lại về là read only
+
+```bash
+chmod 400 general-use.pem
+```
+
+<Image src="/assets/preparation/2.4.3.png" />
+
+Mở một SSH Session mới trong VSCode để kết nối SSH
+
+<Image src="/assets/preparation/2.4.4.png" />
+
+Trở lại với trang EC2 Console
+
+- Chọn `deploy-db-host`
+- Sao chép lại **Private IPv4 address**
+
+<Image src="/assets/preparation/2.4.5.png" />
+
+Nhập lệnh ở bên dưới và ấn Enter
+
+```bash
+ssh -i general-use.pem ubuntu@"private-ipv4"
+```
+
+<Image src="/assets/preparation/2.4.6.png" />
+
+Như vậy thì chúng ta đã kết nối SSH vào trong Database Host thành công.
+
+## Install some Requirements
+
+Nhập lệnh bên dưới để tải MySQL Server
+
+```bash
+sudo apt update -y && sudo apt install mysql-server
+```
+
+<Image src="/assets/preparation/2.4.7.png" />
+
+<Image src="/assets/preparation/2.4.8.png" />
+
+Kiểm tra kết quả lần lượt với các câu lệnh
+
+```bash
+mysql --version
+systemctl status mysql
+```
+
+<Image src="/assets/preparation/2.4.9.png" />
+
+Như vậy thì chúng ta đã cài đặt MySQL Server thành công.
+
+## Modify MySQL Server Configure
+
+Hiện tại thì MySQL Server nó listen những request trong localhost (mặc định), nên giờ mình sẽ cho phép nó listen Internet. Đầu tiên là vào trong file `/etc/mysql/my.cnf` để chỉnh sửa
+
+```bash
+sudo vi /etc/mysql/my.cnf
+```
+
+Thêm cấu hình như bên dưới
+
+```vi
+[mysqld]
+bind-address = 0.0.0.0
+```
+
+<Image src="/assets/preparation/2.4.10.png" />
+
+Sau khi thêm xong thì lưu lại và tiến hành Restart lại Service
+
+```bash
+sudo systemctl restart mysql
+```
+
+<Image src="/assets/preparation/2.4.11.png" />
+
+Như vậy là MySQL Server có thể được truy cập từ Internet, nhưng vì SG chỉ cho phép truy cập từ Public SG nên chỉ những Instance trong Public SG mới có thể kết nối tới.
+
+## Create new MySQL Account User
+
+Trong phần này thì sẽ tạo một user mới, thay vì là sử dụng MySQL Root User. Nhập lệnh bên dưới để mở MySQL CLI
+
+```bash
+sudo mysql
+```
+
+<Image src="/assets/preparation/2.4.12.png" />
+
+Mình sẽ tạo một user mới với thông tin gồm:
+
+- Username: `admin`
+- Password: `letmein12345`
+
+```mysql
+CREATE USER 'admin'@'%' IDENTIFIED BY 'letmein12345';
+```
+
+<Image src="/assets/preparation/2.4.13.png" />
+
+Sau khi tạo xong thì mình sẽ cấp quyền cho User này.
+
+```mysql
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'admin'@'%' WITH GRANT OPTION;
+```
+
+<Image src="/assets/preparation/2.4.14.png" />
+
+## Create Database
+
+Khi đã tạo xong user, thì chúng ta sẽ thoát khỏi MySQL CLI và đăng nhập bằng User mới tạo khi nãy.
+
+```bash
+mysql -u admin -p
+```
+
+<Image src="/assets/preparation/2.4.15.png" />
+
+Tạo thử một Database và Table để kiểm tra kết quả
+
+```mysql
+CREATE DATABASE IF NOT EXISTS TEST;
+USE TEST;
+CREATE TABLE CUSTOMER (
+  Id int NOT NULL AUTO_INCREMENT,
+  CustomerName varchar(255),
+  ContactName varchar(255),
+  Address varchar(255),
+  City varchar(255),
+  PostalCode varchar(255),
+  Country varchar(255),
+  PRIMARY KEY (Id)
+);
+```
+
+<Image src="/assets/preparation/2.4.16.png" />
+
+Thêm dữ liệu vào trong Database
+
+```mysql
+INSERT INTO CUSTOMER (CustomerName, ContactName, Address, City, PostalCode, Country)
+VALUES ('Tuna Nguyen', 'Tom B. Erichsen', 'Tam Hoa', 'Bien Hoa', '80000', 'Viet Nam');
+```
+
+<Image src="/assets/preparation/2.4.17.png" />
+
+Kiểm tra
+
+```mysql
+SELECT * FROM CUSTOMER;
+```
+
+<Image src="/assets/preparation/2.4.18.png" />
+
+Ok, như vậy thì user này đã có thể thêm sửa xoá ổn định, trong phần tiếp theo thì mình sẽ kết nối MySQL Client tới Database Host bằng User này để thực hiện các thao tác tạo Database, Table, ...

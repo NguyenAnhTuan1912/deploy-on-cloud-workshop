@@ -5,10 +5,12 @@ import Link from "next/link";
 
 // Import components
 import Notice from "./components/Notice";
+import _Image from "./components/Image";
 
 const config: DocsThemeConfig = {
   components: {
     Notice,
+    Image: _Image,
   },
   head: function useHead() {
     const config = useConfig<{ description?: string; image?: string }>();

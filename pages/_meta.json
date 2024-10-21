@@ -13,7 +13,7 @@
   },
   "introduction": "Introduction",
   "preparation": "Preparation",
-  "configure-mysql": "Configure Database Server with MySQL",
+  "configure-mysql": "Create Database (MySQL)",
   "deploy-nodejs-application": "Deploy NodeJS Application",
   "deploy-react-application": "Deploy React Application",
   "deploy-other-applications": "Deploy Other Applications",
