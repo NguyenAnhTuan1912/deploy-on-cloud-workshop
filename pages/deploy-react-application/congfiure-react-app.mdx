@@ -1,0 +1,120 @@
+---
+title: Configure React Application
+---
+
+## Build
+
+Đầu tiên, cd vào trong thư mục `client` trong thư mục của dự án. Sau đó là cài đặt các dependencies cần thiết.
+
+```bash
+cd todoapp/client
+npm install
+```
+
+<Image src="/assets/deploy-react/5.1.1.png" />
+
+Vào trong file `/todoapp/client/.env` để chỉnh lại thông tin như sau
+
+<Image src="/assets/deploy-react/5.1.2.png" />
+
+Giờ thì thực hiện build ra thành static file để cho Nginx có thể dùng để sử dụng khi có người dùng request tới
+
+```bash
+npx vite build
+```
+
+<Image src="/assets/deploy-react/5.1.3.png" />
+
+Và mình có thể thấy được output nằm ở trong thư mục `build` hoặc `dist`
+
+<Image src="/assets/deploy-react/5.1.4.png" />
+
+Ok, như vậy là chúng ta đã build xong, rất đơn giản.
+
+## Deploy
+
+Tiếp theo, sao chép và chuyển output của Vite, `public` và `index.html` sang folder `/var/www/todoapp`. Tạo thư mục `todoapp` trong `/var/www`
+
+```bash
+sudo mkdir /var/www/todoapp
+sudo cp -r $HOME/todoapp/client/dist/* /var/www/todoapp
+```
+
+<Image src="/assets/deploy-react/5.1.5.png" />
+
+Sau đó là tạo thêm một file config mới tên là `default`
+
+```bash
+vi default
+```
+
+Và thêm cấu hình bên dưới bên dưới
+
+```bash
+upstream backend {
+  server localhost:8000;
+}
+
+server {
+  listen 80;
+  # Any address
+  server_name _;
+
+  root /var/www/todoapp;
+  index index.html;
+
+  # Serve the React app
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  # Proxy API requests to the backend service
+  location /api/ {
+    rewrite ^/api/(.*)$ /$1 break;
+    proxy_pass http://backend;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+
+  # Proxy /uploads requests to backend
+  location /uploads {
+    proxy_pass http://backend;
+  }
+
+  # Health check
+  location /health {
+    return 200 'Healthy';
+    add_header Content-Type text/plain;
+  }
+}
+```
+
+<Image src="/assets/deploy-react/5.1.6.png" />
+
+Lưu lại và sau đó là copy file `default` này sang thư mục `/etc/nginx/sites-enabled`
+
+```bash
+sudo cp default /etc/nginx/sites-enabled/default
+```
+
+Và kiểm tra xem các file config đã hợp lệ hay chưa
+
+```bash
+sudo nginx -t
+```
+
+<Image src="/assets/deploy-react/5.1.7.png" />
+
+Khởi động lại Nginx service và kiểm tra lại status
+
+```bash
+sudo systemctl restart nginx
+sudo systemctl status nginx
+```
+
+<Image src="/assets/deploy-react/5.1.8.png" />
+
+Ok, vậy là Nginx vẫn hoạt động bình thường, và để xem là ứng dụng của chúng ta có thật sự hoạt động hay không thì vào kiểm tra với **Public DNS** của `deploy-app-host`.
