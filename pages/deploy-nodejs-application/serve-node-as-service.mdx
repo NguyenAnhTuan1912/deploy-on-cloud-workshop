@@ -12,6 +12,7 @@ PORT=8000
 MYSQL_HOST="database-host-private-ipv4"
 MYSQL_USER="admin"
 MYSQL_USER_PASSWORD="letmein12345"
+MYSQL_DATABASE="TODOAPP"
 ```
 
 Và binary của Node là nằm ở trong `/home/ubuntu/.nvm` chứ không nằm trong `/usr/bin` hay `/usr/local/bin`.
@@ -74,6 +75,7 @@ Environment=PORT=8000
 Environment=MYSQL_HOST="database-host-private-ipv4"
 Environment=MYSQL_USER="admin"
 Environment=MYSQL_USER_PASSWORD="letmein12345"
+Environment=MYSQL_DATABASE="TODOAPP"
 
 [Install]
 WantedBy=multi-user.target
