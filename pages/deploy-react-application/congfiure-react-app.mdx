@@ -17,10 +17,12 @@ Vào trong file `/todoapp/client/.env` để chỉnh lại thông tin như sau
 
 <Image src="/assets/deploy-react/5.1.2.png" />
 
-Giờ thì thực hiện build ra thành static file để cho Nginx có thể dùng để sử dụng khi có người dùng request tới
+Giờ thì thực hiện build source của React thành static file để cho Nginx có thể trả về cho client mỗi khi có request tới
 
 ```bash
 npx vite build
+# Hoặc
+npm run build
 ```
 
 <Image src="/assets/deploy-react/5.1.3.png" />
@@ -108,7 +110,7 @@ sudo nginx -t
 
 <Image src="/assets/deploy-react/5.1.7.png" />
 
-Khởi động lại Nginx service và kiểm tra lại status
+Lần lượt khởi động lại Nginx service và kiểm tra lại trạng thái của Nginx
 
 ```bash
 sudo systemctl restart nginx
