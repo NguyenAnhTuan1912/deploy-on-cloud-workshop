@@ -81,11 +81,6 @@ server {
     proxy_cache_bypass $http_upgrade;
   }
 
-  # Proxy /uploads requests to backend
-  location /uploads {
-    proxy_pass http://backend;
-  }
-
   # Health check
   location /health {
     return 200 'Healthy';
